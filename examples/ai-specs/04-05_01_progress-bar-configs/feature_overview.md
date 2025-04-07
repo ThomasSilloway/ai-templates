@@ -1,0 +1,2 @@
+Create a new Tab on the main page called Configs after the Settings, but before the DebugConsole
+This new page should allows you to create, delete, modify configurations. Each configuration is used for a progress bar display on another page. You should be able to configure the text on each side of the progress bar (ex: Left, Right). The color of each side of the progress bar with a color picker that you can expand. Also need to be able to configure the configuration name. So one might be Beard/Shave and the other might be BeardType for example

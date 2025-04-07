@@ -1,0 +1,4 @@
+We need to support some more events coming in from Fourth wall this time instead of twitch. These events are Donation, Gift Purchase, and  Order Placed. You can see more details in the websocket-event-types.md    We don't have any documentation yet of what the websocket events will look like, so for this feature let's just set up the scaffolding.
+This includes:
+- Update `Point Configuration` panel on the `Settings` page to include points for each of these events. It should just be raw points for each of them. So only 3 new settings under the heading FourthWall
+- Add the ability to capture these streamerbot events from the websocket and print out the raw data we get from them. Don't try to do any parsing of them yet.  The normal service file is getting long, so create a new service to handle this like we did for the twitch cheer

@@ -1,0 +1,22 @@
+# Template Generation Configuration
+
+# File paths (relative to project root)
+paths:
+  templates: ai-specs/templates
+  project_summary: project-summary.md
+  project_tech_design: project-tech-design.md
+
+# Template files to process (excluding feature_overview.md which is generated dynamically)
+template_files:
+  - spec-architecture-brainstorm-and-prd.md
+  - spec-document-progress.md
+  - spec_bug_fixing_all.md
+  - spec_polish.md
+  - spec_polish_small.md
+  - spec-implementation.md
+
+# Required directories to create in new feature folders
+required_dirs:
+  - generated
+  - generated/bugs
+  - generated/polish
