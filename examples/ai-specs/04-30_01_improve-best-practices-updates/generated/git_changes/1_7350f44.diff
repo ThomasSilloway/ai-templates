@@ -1,0 +1,111 @@
+Commit: 7350f443c943036d57e65a9e0ee7b7f7d1605cea
+Message:
+Update script to run with uv
+
+---
+
+Diff:
+
+diff --git a/.vscode/tasks.json b/.vscode/tasks.json
+index 6b7b1522d8600be9482097a8244a5c4894db0f80..22a817875381a4798dedb0a1ee7bd4e9efeb72d2 100644
+--- a/.vscode/tasks.json
++++ b/.vscode/tasks.json
+@@ -13,15 +13,15 @@
+       },
+       "problemMatcher": [],
+       "group": {
+         "kind": "none",
+         "isDefault": true
+       }
+     },
+     {
+       "label": "Analyze Feature Commits for Best Practices",
+       "type": "shell",
+-      "command": "python -m scripts.identify_coding_errors.main",
++      "command": "uv run scripts/identify_coding_errors/main.py",
+       "problemMatcher": []
+     }
+   ]
+ }
+\ No newline at end of file
+diff --git a/scripts/identify_coding_errors/diff_generator.py b/scripts/identify_coding_errors/diff_generator.py
+index 9fb65d24012b9ec18762af37b92cbd548aec36c5..93ee158f2686556355d7bced2e2fff37aae541d0 100644
+--- a/scripts/identify_coding_errors/diff_generator.py
++++ b/scripts/identify_coding_errors/diff_generator.py
+@@ -1,16 +1,16 @@
+ import os
+ import logging
+ from typing import List
+ 
+ import git # For type hinting Repo object
+-from .git_handler import get_commit_details, CommitNotFoundError, GitHandlerError, _get_repo # Use internal repo getter if needed
++from git_handler import get_commit_details, CommitNotFoundError, GitHandlerError, _get_repo # Use internal repo getter if needed
+ 
+ # Configure logging
+ logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
+ 
+ class DiffGeneratorError(Exception):
+     """Custom exception for errors during diff file generation."""
+     pass
+ 
+ def generate_diff_files(commit_hashes: List[str], output_dir: str, repo: git.Repo) -> None:
+     """
+diff --git a/scripts/identify_coding_errors/main.py b/scripts/identify_coding_errors/main.py
+index d284610909014e94a95dcf559b44470f8059f62e..5ee98562163588ea69425a8f0c95429989895ce5 100644
+--- a/scripts/identify_coding_errors/main.py
++++ b/scripts/identify_coding_errors/main.py
+@@ -1,42 +1,33 @@
++# /// script
++# dependencies = [
++#   "GitPython>=3.1.0"
++# ]
++# ///
++
+ import sys
+ import os
+ import logging
+ 
+ # Ensure the script's directory is in the path for relative imports
+ # This might be needed if running as 'python scripts/identify_coding_errors/main.py'
+ # instead of 'python -m scripts.identify_coding_errors.main'
+ # script_dir = os.path.dirname(os.path.abspath(__file__))
+ # if script_dir not in sys.path:
+ #     sys.path.insert(0, os.path.dirname(script_dir)) # Add parent ('scripts') to path
+ 
+-try:
+-    from .feature_finder import find_latest_feature_folder, FeatureFinderError
+-    from .git_handler import (
+-        get_commit_range, _get_repo, GitHandlerError, CommitNotFoundError,
+-        NoCommitsFoundError
+-    )
+-    from .diff_generator import generate_diff_files, DiffGeneratorError
+-except ImportError as e:
+-     # Fallback for running as a script directly? Risky.
+-     # Prefer running with `python -m scripts.identify_coding_errors.main`
+-     logging.error(f"ImportError: {e}. Please run using 'python -m scripts.identify_coding_errors.main'")
+-     # Attempt relative import from parent if possible (less reliable)
+-     try:
+-         from feature_finder import find_latest_feature_folder, FeatureFinderError
+-         from git_handler import (
+-             get_commit_range, _get_repo, GitHandlerError, CommitNotFoundError,
+-             NoCommitsFoundError
+-         )
+-         from diff_generator import generate_diff_files, DiffGeneratorError
+-     except ImportError:
+-         sys.exit(f"Failed to import necessary modules. Ensure you are in the project root and run with 'python -m scripts.identify_coding_errors.main'. Error: {e}")
++from feature_finder import find_latest_feature_folder, FeatureFinderError
++from git_handler import (
++    get_commit_range, _get_repo, GitHandlerError, CommitNotFoundError,
++    NoCommitsFoundError
++)
++from diff_generator import generate_diff_files, DiffGeneratorError
+ 
+ 
+ # Configure logging
+ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+ 
+ # Constants
+ GENERATED_DIR_NAME = "generated"
+ GIT_CHANGES_DIR_NAME = "git_changes"
+ 
+ def run_analysis():

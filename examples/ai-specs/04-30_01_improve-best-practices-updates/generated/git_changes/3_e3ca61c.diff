@@ -1,0 +1,40 @@
+Commit: e3ca61ced4c340b52f492c115ee1a5d5a33ad5b8
+Message:
+update to ignore diff files
+
+---
+
+Diff:
+
+diff --git a/scripts/identify_coding_errors/git_handler.py b/scripts/identify_coding_errors/git_handler.py
+index 22945bf81095d7bc747e1c375cfcdf49305c7431..2d634381405b22762d13240d18fdc63e59e10beb 100644
+--- a/scripts/identify_coding_errors/git_handler.py
++++ b/scripts/identify_coding_errors/git_handler.py
+@@ -159,25 +159,25 @@ def get_commit_range(start_commit_exclusive_hex: Optional[str] = None, end_commi
+ def get_commit_details(repo: git.Repo, commit_hash: str) -> Tuple[str, str]:
+     """Gets the full commit message and diff for a given commit hash."""
+     try:
+         commit = repo.commit(commit_hash)
+         message = commit.message
+ 
+         # Get the diff against the parent commit(s)
+         # For merge commits, this shows the combined diff. For regular commits, it shows diff against the parent.
+         # Using --full-index to ensure unambiguous blob identification.
+         # Using -U10 for more context lines, adjust if needed.
+-        diff = repo.git.show(commit.hexsha, "--full-index", "-U10", "--pretty=format:%b", "--", ".", ":(exclude)*.md") # %b gets body only, message is separate
++        diff = repo.git.show(commit.hexsha, "--full-index", "-U10", "--pretty=format:%b", "--", ".", ":(exclude)*.md", ":(exclude)*.diff") # %b gets body only, message is separate
+ 
+         # Handle potential empty diff for the very first commit if it's included
+         if not commit.parents:
+-             diff = repo.git.show(commit.hexsha, "--full-index", "-U10", "--pretty=format:%b", "--", ".", ":(exclude)*.md") # Show initial content
++             diff = repo.git.show(commit.hexsha, "--full-index", "-U10", "--pretty=format:%b", "--", ".", ":(exclude)*.md", ":(exclude)*.diff") # Show initial content
+ 
+         return message, diff
+     except (ValueError, GitCommandError) as e:
+         raise CommitNotFoundError(f"Could not get details for commit '{commit_hash}': {e}")
+ 
+ 
+ if __name__ == '__main__':
+     # Example usage when run directly (requires a Git repo in the current or parent dir)
+     try:
+         print("Attempting to find commit range automatically...")
