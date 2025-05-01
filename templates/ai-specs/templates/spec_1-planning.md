@@ -10,7 +10,7 @@
 
 ## Relevant files
 
-- (Add your ADK docs here)
+- (Add your docs here)
 
 
 - Project Tech Design: @/project-tech-design.md
