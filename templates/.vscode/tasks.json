@@ -16,6 +16,12 @@
         "kind": "none",
         "isDefault": true
       }
+    },
+    {
+      "label": "Analyze Feature Commits for Best Practices",
+      "type": "shell",
+      "command": "uv run scripts/identify_coding_errors/main.py",
+      "problemMatcher": []
     }
   ]
 }
