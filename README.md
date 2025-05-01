@@ -57,7 +57,16 @@ Either method will create the new feature specification folder and files within 
 
 ### Identify Coding Errors Tool
 
-This tool analyzes Git commit history to identify coding errors and best practices. You can run it using:
+This tool analyzes Git commit history to identify coding errors and best practices. It works with a specific Git workflow:
+
+**Expected Git Workflow:**
+- Maintain a `main` branch as the primary branch
+- For each feature, create a feature branch
+- After the first implementation of a feature by the AI Agent, create a commit with a message containing "First pass xxxxx"
+- The tool looks for this "First pass" commit to determine the starting point for analysis
+- If the "First pass" commit isn't found, the tool will prompt you for a commit hash
+
+You can run the tool using:
 
 **Method 1: VSCode Task (Recommended)**
 
@@ -76,7 +85,7 @@ This tool analyzes Git commit history to identify coding errors and best practic
 
 The tool will:
 1. Find the latest feature folder in the `ai-specs` directory
-2. Determine the commit range for analysis
+2. Determine the commit range for analysis (starting from the "First pass" commit or a manually specified commit)
 3. Generate diff files in the `generated/git_changes` directory of the feature folder
 4. These diffs can then be analyzed to update the best practices document
 
