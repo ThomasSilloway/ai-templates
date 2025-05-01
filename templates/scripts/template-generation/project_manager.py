@@ -18,66 +18,31 @@ console = Console()
 class ProjectManager:
     """Handles loading and managing project details."""
     
-    def __init__(self, project_summary_path: Path, project_tech_design_path: Path):
+    def __init__(self, project_summary_path: Path):
         self.project_summary_path = project_summary_path
-        self.project_tech_design_path = project_tech_design_path
         self._project_details: Optional[str] = None
-        self._project_tech_design: Optional[str] = None
+
+    def _load_template_content(self, template_path: Path) -> str:
+        """Load content from a template file.
         
-    def load_project_details(self) -> str:
-        """Load project details from project-summary.md.
-        
-        Returns:
-            str: Project details content
+        Args:
+            template_path: Path to the template file
             
-        Raises:
-            FileNotFoundError: If project summary file not found
+        Returns:
+            str: Template content, or empty string if file not found
         """
         try:
-            if not self._project_details:
-                if not self.project_summary_path.exists():
-                    raise FileNotFoundError(
-                        f"Project summary file not found: {self.project_summary_path}"
-                    )
-                
-                self._project_details = self.project_summary_path.read_text(encoding='utf-8')
-                console.print(f"Loaded project details from: [green]{self.project_summary_path}[/]")
-                
-            return self._project_details
+            if not template_path.exists():
+                raise FileNotFoundError(f"Template file not found: {template_path}")
+            
+            content = template_path.read_text(encoding='utf-8')
+            console.print(f"Loaded template from: [green]{template_path}[/]")
+            return content
             
         except FileNotFoundError:
-            raise
-
-    def _load_project_tech_design(self) -> str:
-        """Load project tech design from the configured path.
-
-        Returns:
-            str: Project tech design content
-
-        Raises:
-            FileNotFoundError: If project tech design file not found
-        """
-        try:
-            if not self._project_tech_design:
-                if not self.project_tech_design_path.exists():
-                    raise FileNotFoundError(
-                        f"Project tech design file not found: {self.project_tech_design_path}"
-                    )
-                
-                self._project_tech_design = self.project_tech_design_path.read_text(encoding='utf-8')
-                console.print(f"Loaded project tech design from: [green]{self.project_tech_design_path}[/]")
-                
-            return self._project_tech_design
+            console.print(f"[yellow]Warning: Template not found: {template_path}, using empty string[/]")
+            return ""
             
-        except FileNotFoundError:
-            raise
-        except Exception as e:
-            console.print(f"[bold red]Error:[/] Failed to load project tech design: {e}")
-            raise
-        except Exception as e:
-            console.print(f"[bold red]Error:[/] Failed to load project details: {e}")
-            raise
-
     def get_template_variables(self, feature_name: str, feature_overview: str, folder_path: Path) -> dict:
         """Get dictionary of template variables.
         
@@ -89,15 +54,24 @@ class ProjectManager:
         Returns:
             dict: Template variables
         """
-        project_details = self.load_project_details()
-        project_tech_design = self._load_project_tech_design()
+        project_details = self._load_template_content(self.project_summary_path)
+        common_errors = self._load_template_content(Path("ai-specs/templates/task_common_errors.md"))
+        change_notes_template = self._load_template_content(Path("ai-specs/templates/task_change_notes.md"))
+        boomerang_template = self._load_template_content(Path("ai-specs/templates/task_boomerang_mode.md"))
+
+        # Ensure forward slashes in path strings
+        folder_path = Path(str(folder_path).replace('\\', '/'))
         
         return {
             "feature_name": feature_name,
             "feature_overview": feature_overview,
             "project_details": project_details,
-            "project_tech_design": project_tech_design,
             "generated_folder": str(folder_path),
             "prd_link": str(folder_path / "generated/prd.md"),
-            "change_notes": str(folder_path / "generated/change_notes.md")
+            "change_notes": str(folder_path / "generated/change_notes.md"),
+            "api_reference": str(folder_path / "generated/api_reference.md"),
+            "task_common_errors": common_errors,
+            "task_change_notes": change_notes_template,
+            "task_boomerang_mode": boomerang_template,
         }
+

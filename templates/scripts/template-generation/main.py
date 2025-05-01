@@ -36,7 +36,7 @@ def main() -> NoReturn:
         # Initialize components
         input_manager = InputManager()
         folder_generator = FolderGenerator()
-        project_manager = ProjectManager(config.project_summary_path, config.project_tech_design_path)
+        project_manager = ProjectManager(config.project_summary_path)
         file_generator = FileGenerator(config.templates_path)
         
         # Collect user input

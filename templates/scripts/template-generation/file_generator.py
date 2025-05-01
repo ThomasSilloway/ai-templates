@@ -61,9 +61,12 @@ class FileGenerator:
                 raise FileNotFoundError(f"Template file not found: {source_path}")
             
             content = source_path.read_text(encoding='utf-8')
-            for var_name, var_value in variables.items():
-                placeholder = "{{" + f" {var_name} " + "}}"
-                content = content.replace(placeholder, var_value)
+            
+            # Two passes to handle nested template variables
+            for _ in range(2):
+                for var_name, var_value in variables.items():
+                    placeholder = "{{" + f" {var_name} " + "}}"
+                    content = content.replace(placeholder, var_value)
             
             target_file.write_text(content, encoding='utf-8')
             console.print(f"Generated file: [green]{target_file.relative_to(target_path)}[/]")

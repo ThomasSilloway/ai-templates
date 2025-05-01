@@ -66,13 +66,6 @@ class Config:
     def project_summary_path(self) -> Path:
         """Get the project summary file path"""
         return Path(self._config["paths"]["project_summary"])
-    @property
-    def project_tech_design_path(self) -> Path:
-        """Get the project tech design file path"""
-        if "project_tech_design" not in self._config["paths"]:
-            raise KeyError("Missing 'project_tech_design' path in config.yaml")
-        return Path(self._config["paths"]["project_tech_design"])
-
 
     @property
     def template_files(self) -> list[str]:

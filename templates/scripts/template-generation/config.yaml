@@ -4,16 +4,15 @@
 paths:
   templates: ai-specs/templates
   project_summary: project-summary.md
-  project_tech_design: project-tech-design.md
 
 # Template files to process (excluding feature_overview.md which is generated dynamically)
 template_files:
-  - spec-architecture-brainstorm-and-prd.md
+  - spec_1-planning.md
   - spec-document-progress.md
   - spec_bug_fixing_all.md
   - spec_polish.md
   - spec_polish_small.md
-  - spec-implementation.md
+  - spec_2-implementation.md
 
 # Required directories to create in new feature folders
 required_dirs:
